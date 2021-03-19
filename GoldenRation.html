@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Golden Ratio</title>
+    <link rel="stylesheet" href="assets/styles/style.css">
+    <!-- Bootstrap Style -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+</head>
+
+<body>
+
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+        <a class="navbar-brand" href="#">Golden Ratio Menu</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <div class="input-group w-25">
+                        <span class="input-group-btn">
+                      <button type="button" class="btn btn-default btn-number" disabled="disabled" onclick="redraw()"  data-type="minus" data-field="quant[1]">
+                          <i class="fa fa-minus"></i>
+                        </button>
+                        </span>
+                        <input type="text" id="numberInput" name="quant[1]" class="form-control input-number" value="8" min="1" max="10000">
+                        <span class="input-group-btn">
+                      <button type="button" class="btn btn-default btn-number" onclick="redraw()"  data-type="plus" data-field="quant[1]">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        </span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" onclick="redrawBorder(this)" id="checkBorder">
+                        <label class="form-check-label" for="checkBorder">Border</label>
+                      </div>
+                </li>
+            </ul>
+        </div>
+      </nav>
+
+    <div id="blocks" class="row h-100">
+        
+          <script>
+                var sizer = 20;
+                var list = [];
+                //Preprocess
+                list[0] = 1;
+                list[1] = 1;
+
+                for(let i = 2; i < 100; i++){
+                    list[i] = list[i - 1] + list[i - 2];
+                }
+
+                window.onload(redraw());
+
+                function createFibonacciBlock(n, id){
+                    let block = document.createElement('div');
+                    block.innerText = n;
+                    block.style.position = 'absolute';
+                    block.style.display = 'flex';
+                    block.style.justifyContent = 'center';
+                    block.style.alignItems = 'center';
+                    block.style.fontSize = (sizer / 4) * n + "px";
+                    block.style.color = "white";
+                    // block.style.border = '1px solid black';
+                    block.style.height = (n * sizer) + "px";
+                    block.style.width = block.style.height;
+                    block.style.margin = "0px";
+                    block.style.padding = "0px";
+                    block.style.backgroundColor = getRandomColor();
+                    block.id = id;
+                
+                    return block;
+                }
+
+                function getRandomColor() {
+                    let letters = '0123456789ABCDEF';
+                    let color = '#';
+                    for (var i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                }
+                
+                function parentChildState(parent, block, state){
+                    if(state == 0){
+                        // block.style.borderRadius = block.style.height + " 0 0 0";   
+                    }
+                    else if(state == 1){
+                        block.style.top = "0px";
+                        block.style.right = "-" + block.style.height;
+                        // block.style.borderRadius = "0 " + block.style.height + " 0 0";   
+                    }
+                    else if(state == 2){
+                        block.style.bottom = "-" + block.style.height;
+                        block.style.right = "0px";
+                        // block.style.borderRadius = "0 0 " + block.style.height +" 0";   
+                    }
+                    else if(state == 3){
+                        block.style.bottom = "0px";
+                        block.style.left = "-" + block.style.height;
+                        // block.style.borderRadius = "0 0 0 " + block.style.height;   
+                    }
+                    else if(state == 4){
+                        block.style.top = "-" + block.style.height;
+                        block.style.left = "0px";
+                        // block.style.borderRadius = block.style.height + " 0 0 0";      
+                    }
+                    parent.append(block);
+                }
+
+                function parentChildStateBorder(parent, block, state){
+                    if(state == 0){
+                        block.style.borderRadius = block.style.height + " 0 0 0";   
+                    }
+                    else if(state == 1){
+                        block.style.top = "0px";
+                        block.style.right = "-" + block.style.height;
+                        block.style.borderRadius = "0 " + block.style.height + " 0 0";   
+                    }
+                    else if(state == 2){
+                        block.style.bottom = "-" + block.style.height;
+                        block.style.right = "0px";
+                        block.style.borderRadius = "0 0 " + block.style.height +" 0";   
+                    }
+                    else if(state == 3){
+                        block.style.bottom = "0px";
+                        block.style.left = "-" + block.style.height;
+                        block.style.borderRadius = "0 0 0 " + block.style.height;   
+                    }
+                    else if(state == 4){
+                        block.style.top = "-" + block.style.height;
+                        block.style.left = "0px";
+                        block.style.borderRadius = block.style.height + " 0 0 0";      
+                    }
+                    parent.append(block);
+                }
+
+                
+                function redraw(){
+                    var container = document.getElementById('blocks');
+                    container.innerHTML = "";
+                    var state = 0;
+                    let n = document.getElementById('numberInput').value;
+                    for(let i = n; i >= 0; i--){
+    
+                        if(state == 0){
+                            parentChildState(container, createFibonacciBlock(list[i], i), state)
+                            state++;
+                        }
+                        else if(state == 4){
+                            parentChildState(document.getElementById(i + 1), createFibonacciBlock(list[i], i), state)
+                            // document.getElementById(list[i + 1]).append(createFibonacciBlock(list[i], state));
+                            state = 1;
+                        }
+                        else{
+                            parentChildState(document.getElementById(i + 1), createFibonacciBlock(list[i], i), state)
+                            state++;
+                        }
+                    }
+                }
+
+                function redrawBorder(isChecked){
+                    if(isChecked.checked === true){
+                        var container = document.getElementById('blocks');
+                        container.innerHTML = "";
+                        var state = 0;
+                        let n = document.getElementById('numberInput').value;
+                        for(let i = n; i >= 0; i--){
+        
+                            if(state == 0){
+                                parentChildStateBorder(container, createFibonacciBlock(list[i], i), state)
+                                state++;
+                            }
+                            else if(state == 4){
+                                parentChildStateBorder(document.getElementById(i + 1), createFibonacciBlock(list[i], i), state)
+                                // document.getElementById(list[i + 1]).append(createFibonacciBlock(list[i], state));
+                                state = 1;
+                            }
+                            else{
+                                parentChildStateBorder(document.getElementById(i + 1), createFibonacciBlock(list[i], i), state)
+                                state++;
+                            }
+                        }
+                    }
+                    else{
+                        redraw();
+                    }
+                }
+          </script>
+        
+     </div>
+
+     
+
+<script src="assets/js/script.js"></script>
+</body>
+
+</html>
